@@ -1,0 +1,68 @@
+filebeat.inputs:
+- type: log
+  enabled: true  
+  fields:
+    application: "docker"    
+  paths:
+    - /var/lib/docker/containers/*/*.log
+  
+  json.message_key: message
+  json.overwrite_keys: true
+  json.keys_under_root: true
+  json.add_error_key: true
+
+##
+#filebeat.prospectors:
+#  paths:
+#	- /var/lib/docker/containers/*/*.log
+#  input_type: log
+#  document_type: "Docker" 
+#
+#  json.keys_under_root: true
+#  json.add_error_key: true
+#  json.message_key: log
+
+#output.logstash:
+#  hosts: ["logstash:5044"]
+
+#filebeat.inputs:
+#- type: docker
+#  combine_partial: true
+#  containers: 
+#    path: "/var/lib/docker/containers/*/*.log"
+#    stream: "stdout"
+#    ids:
+#      - "*"
+
+#- type: docker
+#  combine_partial: true
+#  containers:
+#    path: "/var/lib/docker/containers"
+#    stream: "stdout"
+#    ids:
+#      - "*"
+
+
+# ignore_older: 10m
+
+processors:
+- decode_json_fields:
+    fields: ["log", "message"]
+    #    target: ""
+    overwrite_keys: true
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+output.logstash:
+  hosts: ["logstash:5044"]
+  
+logging.level: info
+logging.to_files: false
+  #  logging.to_syslog: false
+  #loggins.metrice.enabled: false
+  #logging.files:
+  #  path: /var/log/filebeat
+  #  name: filebeat
+  #  keepfiles: 7
+  #  permissions: 0644
+  #ssl.verification_mode: none

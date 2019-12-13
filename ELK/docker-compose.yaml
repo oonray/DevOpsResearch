@@ -1,0 +1,76 @@
+version: "3.7"
+
+services:
+
+##---------------------------------
+#       ELK
+##---------------------------------
+        elasticsearch:        
+            hostname: "ElasticSearch"
+            container_name: "ElasticSearch"
+            image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+            environment: 
+              - discovery.type=single-node
+              - xpack.security.enabled=false
+            networks: 
+                ELK:
+                        ipv4_address: "10.11.10.7"
+
+        logstash:
+            hostname: "Logstash" 
+            container_name: "Logstash" 
+            image: docker.elastic.co/logstash/logstash:7.1.1
+            ports:
+              - 12201:12201/udp
+            links:
+                    - "elasticsearch:elasticsearch"
+            depends_on: 
+                - elasticsearch
+            volumes:
+              - ./ELK/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro 
+            networks:
+                ELK:
+                        ipv4_address: "10.11.10.6"
+
+        kibana:
+            hostname: "Kibana"
+            container_name: "Kibana"
+            image: docker.elastic.co/kibana/kibana:7.1.1
+            depends_on:
+              - elasticsearch
+            ports: 
+              - 5601:5601
+            networks: 
+                ELK:
+                        ipv4_address: "10.11.10.5"
+
+        filebeat01:
+                hostname: "FileBeat01"
+                container_name: "FileBeat01"
+                user: root
+                image: docker.elastic.co/beats/filebeat:7.4.2
+                depends_on:
+                        - logstash
+                        - elasticsearch
+                links:
+                        - "logstash:logstash"
+                        - "elasticsearch:elasticsearch"
+                volumes:
+                        - "./FILE/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro"
+                        - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+                        - "/var/run/docker.sock:/var/run/docker.sock:ro"
+                environment:
+                        - output.elasticsearch.hosts="elasticsearch:9200" 
+                        - strict.perms=false
+
+                networks:
+                        ELK:
+                                ipv4_address: "10.11.10.8"
+
+networks:
+        ELK:
+           driver: bridge
+           ipam:
+                  config:
+                          - subnet: "10.11.10.0/24"
+
