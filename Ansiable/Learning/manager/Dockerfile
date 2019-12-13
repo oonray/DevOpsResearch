@@ -1,4 +1,4 @@
-FROM debian:latest
-RUN apt-get update
-RUN apt-get install net-tools ansiable openssh-server python python3 python-pip python3-pip -y
+FROM fedora:latest
+RUN dnf update
+RUN dnf install net-tools ansiable python python3 python-pip python3-pip -y
 
