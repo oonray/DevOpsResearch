@@ -1,0 +1,12 @@
+---
+- name: "Demo Time"
+  hosts: groupA
+
+  tasks:
+    - name: demo task 1
+      debug:
+        msg: "Hello World! 1"
+    
+    - name: demo task 2
+      debug:
+        msg: "Hello World! 2" 

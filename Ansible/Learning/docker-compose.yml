@@ -1,0 +1,31 @@
+version: "3.7"
+
+#
+# @author oonray
+# @brief running ansiable in a docker swarm
+#
+
+services:
+  manager:
+    build:
+      context: "./manager"
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./manager/:/etc/ansible/
+      - ./data/:/ansible/
+
+
+  visualizer:
+    image: dockersamples/visualizer
+    tty: true
+    stdin_open: true
+    ports:
+      - "8080:8080/tcp"
+    volumes:
+      - "/var/run/:/var/run/"
+
+
+    #puppet:
+    
