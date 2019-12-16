@@ -1,6 +1,19 @@
 version: "3.7"
 
 services:
-  master:
-    build:
-      context:
+    master:
+        build:
+            context: master
+            dockerfile: Dockerfile
+        volumes:
+            - ./master/master.d/:/salt/master.d/
+  
+    
+    minion:
+        build:
+           context: slave
+           dockerfile: Dockerfile
+        volumes:
+           - ./slave/minion.d/:/salt/minion.d
+        links:
+           - "master:master"

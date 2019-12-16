@@ -1,5 +1,5 @@
 FROM debian:latest
-WORKDIR /salt
+WORKDIR /salt/master.d
 
 RUN apt-get update
 RUN apt-get install -y curl 
