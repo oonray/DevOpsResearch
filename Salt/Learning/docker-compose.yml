@@ -7,10 +7,16 @@ services:
             dockerfile: Dockerfile
         volumes:
           - ./master/salt:/etc/salt
-            
+        tty: true
+        stdin_open: true
+
     minion:
         build:
            context: minion
            dockerfile: Dockerfile
         links:
            - "master:salt"
+           - "master:master"
+        tty: true
+        stdin_open: true
+
