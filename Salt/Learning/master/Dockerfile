@@ -1,7 +1,5 @@
 FROM debian:latest
-WORKDIR /salt/master.d
-
 RUN apt-get update
-RUN apt-get install -y curl 
-RUN curl -L https://bootstrap.saltstack.com -o install_salt.sh
-RUN sh install_salt.sh -P -M
+RUN apt-get install -y wget
+RUN wget -O bootstrap-salt.sh https://bootstrap.saltstack.com
+RUN sh bootstrap-salt.sh -M -N

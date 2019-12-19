@@ -6,14 +6,11 @@ services:
             context: master
             dockerfile: Dockerfile
         volumes:
-            - ./master/master.d/:/salt/master.d/
-  
-    
+          - ./master/salt:/etc/salt
+            
     minion:
         build:
-           context: slave
+           context: minion
            dockerfile: Dockerfile
-        volumes:
-           - ./slave/minion.d/:/salt/minion.d
         links:
-           - "master:master"
+           - "master:salt"
