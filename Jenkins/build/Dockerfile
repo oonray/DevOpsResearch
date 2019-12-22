@@ -2,7 +2,7 @@ FROM jenkins:latest
 
 USER root
 
-RUN apt-get install -y build-essentials
+RUN apt-get install -y build-essential
 
 COPY docker /usr/bin/docker
 RUN gpasswd -a jenkins staff
