@@ -1,0 +1,11 @@
+FROM jenkins:latest
+
+USER root
+
+RUN apt-get install -y build-essentials
+
+COPY docker /usr/bin/docker
+RUN gpasswd -a jenkins staff
+
+USER jenkins
+ENTRYPOINT ["/bin/tini","--","/usr/bin/local/jenkins.sh"]
