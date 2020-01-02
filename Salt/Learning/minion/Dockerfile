@@ -11,10 +11,11 @@ RUN apt-get update
 
 #install
 RUN apt-get install -y salt-minion
-RUN echo "Docker-Salt-Minion-$(uname -n)-$(uname -o)-$(uname -s)-$(uname -m)" > /etc/salt/minion_id 
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
 #Move Files
 COPY minion /etc/salt/
 COPY hosts /etc/
 
-CMD ["salt-minion"]
+ENTRYPOINT ["/entrypoint.sh"]
