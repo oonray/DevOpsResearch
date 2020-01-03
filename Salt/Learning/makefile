@@ -1,5 +1,7 @@
-all:
+ip="127.0.0.1"
 
+all: minion minion minion
+	
 start:
 	./minion.sh start
 
@@ -10,7 +12,7 @@ stop:
 	./minions.sh stop
 
 minion: build
-	./spawnminion.sh
+	./spawnminion.sh $(ip)
 
 build:
 	cd minion && ./build.sh
