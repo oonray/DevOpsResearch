@@ -3,8 +3,9 @@ ip="127.0.0.1"
 minion=minion
 network=bridge 
 
-#Tags  
-tag=salt:$(shell echo $(1) | sed s:\/:_:g)
+#Tags
+tag_base=salt
+tag=$(tag_base):$(shell echo $(1) | sed s:\/:_:g)
  
 #Colors
 color=$(shell tput setaf $(1)) 
@@ -50,7 +51,7 @@ build_minion:
 
 
 spawn=docker run -d --name $(1) --hostname $(1) --network $(2) $(call tag,$(3)) $(ip) 
-spawn_minion:
+spawn_minion: build_minion
 	$(eval name=$(call name_minion_name,$(minion)))
 ifeq ($(name_minion_num),)
 	$(eval name=$(minion)000)
