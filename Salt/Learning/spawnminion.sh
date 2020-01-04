@@ -6,6 +6,6 @@ if [ -z "$st" ]
 then
     numb=`printf "minion%03d" 0` 
 fi
-echo $numb
-docker run -d --name $numb --hostname $numb --network bridges salt-minion $1
+printf "Spawning %s\n" $numb
+docker run -d --name $numb --hostname $numb --network bridges salt:minion $1
 
