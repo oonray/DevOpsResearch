@@ -1,7 +1,7 @@
 ip="127.0.0.1"
 #Paths
 minion=minion
-network=bridges 
+network=bridge 
 
 #Tags  
 tag=salt:$(shell echo $(1) | sed s:\/:_:g)
@@ -28,15 +28,16 @@ name_minion_num=$(shell docker ps -a | grep -Po '$(1)[0-9]{3}' | grep -Po '[0-9]
 name_minion_name=$(1)$(call name_minion_num)
 
 all: minion minion minion
-	
+
+conainers=$(shell docker ps -a | grep -Po 'minion[0-9]{3}')
 start:
-	./minion.sh start
+	docker start $(call conainers)
 
 restart:
-	./minion.sh restart
+	docker restart $(call containers)
 
 stop:
-	./minions.sh stop
+	docker stop $(call containers)
 
 minion: build_minion
 	$(call log_debug, $(shell ./spawnminion.sh $(ip)))
@@ -49,13 +50,14 @@ build_minion:
 
 
 spawn=docker run -d --name $(1) --hostname $(1) --network $(2) $(call tag,$(3)) $(ip) 
-spawm_minon:
-	$(call spawn,$(call name_minion_name,$(minion)),$(network),$(minion))
-
-
-make_minion_network:
-
-
+spawn_minion:
+	$(eval name=$(call name_minion_name,$(minion)))
+ifeq ($(name_minion_num),)
+	$(eval name=$(minion)000)
+endif
+	@echo $(log_debug)Spawning $(name)
+	$(call spawn,name,$(network),$(minion))
+|
 clean:
 	@echo $(log_debug)Removing Iamges
 	docker rmi $(call tag,$(minion))
