@@ -58,7 +58,7 @@ ifeq ($(name_minion_num),)
 endif
 	@echo $(log_debug)Spawning $(name)
 	$(call spawn,name,$(network),$(minion))
-|
+
 clean:
 	@echo $(log_debug)Removing Iamges
 	docker rmi $(call tag,$(minion))
